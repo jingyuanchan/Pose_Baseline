@@ -3,7 +3,10 @@
 *.aar
 *.ap_
 *.aab
-
+*.pth
+*.tar
+*.avi
+*.mp4
 # Files for the ART/Dalvik VM
 *.dex
 
