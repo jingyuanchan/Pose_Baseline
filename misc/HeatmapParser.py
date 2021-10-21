@@ -6,6 +6,7 @@ from collections import defaultdict
 from misc import visualization
 
 
+
 def py_max_match(scores):
     m = munkres.Munkres()
     assoc = m.compute(scores)
