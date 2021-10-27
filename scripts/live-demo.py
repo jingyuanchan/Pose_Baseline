@@ -84,7 +84,7 @@ def main(camera_id, filename, hrnet_c, hrnet_j, hrnet_weights, hrnet_joints_set,
         if not disable_tracking:
             if len(pts) > 0:
                 if prev_pts is None and prev_person_ids is None:
-                    person_ids = np.arange(next_person_id, len(pts) + next_person_id, dtype=np.int32)
+                    person_ids = np.arange(next_person_id, len(pts) + next_person_id, dtype=np.int32) 
                     next_person_id = len(pts) + 1
                 else:
                     boxes, pts, person_ids = find_person_id_associations(
