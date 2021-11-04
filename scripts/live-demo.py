@@ -31,8 +31,8 @@ def main(camera_id, filename, hrnet_c, hrnet_j, hrnet_weights, hrnet_joints_set,
     video_writer = None
 
     if filename is not None:
-        rotation_code = check_video_rotation(filename)
-        #rotation_code = None
+        #rotation_code = check_video_rotation(filename)
+        rotation_code = None
         video = cv2.VideoCapture(filename)
         assert video.isOpened()
     else:
