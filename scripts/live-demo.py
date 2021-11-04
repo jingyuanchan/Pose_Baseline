@@ -8,11 +8,12 @@ import torch
 from vidgear.gears import CamGear
 import numpy as np
 
+
 sys.path.insert(1, os.getcwd())
 from SimpleHigherHRNet import SimpleHigherHRNet
 from misc.visualization import draw_points, draw_skeleton, draw_points_and_skeleton, joints_dict, check_video_rotation
 from misc.utils import find_person_id_associations
-
+from tqdm import tqdm
 
 def main(camera_id, filename, hrnet_c, hrnet_j, hrnet_weights, hrnet_joints_set, image_resolution, disable_tracking,
          max_nof_people, max_batch_size, disable_vidgear, save_video, video_format, video_framerate, device, extract_pts, output_vid):
@@ -62,7 +63,8 @@ def main(camera_id, filename, hrnet_c, hrnet_j, hrnet_weights, hrnet_joints_set,
 
     frame_count = 0
     pts_dict = {}
-    while True:
+    #while True:
+    for i in tqdm(range(int(video.get(7)))):
         t = time.time()
 
         if filename is not None or disable_vidgear:
