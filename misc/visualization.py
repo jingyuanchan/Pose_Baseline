@@ -129,7 +129,46 @@ def draw_points(image, points, color_palette='tab20', palette_samples=16, confid
     for i, pt in enumerate(points):
         if pt[2] > confidence_threshold:
             image = cv2.circle(image, (int(pt[1]), int(pt[0])), circle_size, tuple(colors[i % len(colors)]), -1)
+    
+    return image
 
+def draw_points_id(image, points, color_palette='tab20', palette_samples=16, confidence_threshold=0.3,person_index=0):
+    """
+    Draws `points` on `image`.
+
+    Args:
+        image: image in opencv format
+        points: list of points to be drawn.
+            Shape: (nof_points, 3)
+            Format: each point should contain (y, x, confidence)
+        color_palette: name of a matplotlib color palette
+            Default: 'tab20'
+        palette_samples: number of different colors sampled from the `color_palette`
+            Default: 16
+        confidence_threshold: only points with a confidence higher than this threshold will be drawn. Range: [0, 1]
+            Default: 0.3
+
+    Returns:
+        A new image with overlaid points
+
+    """
+    try:
+        colors = np.round(
+            np.array(plt.get_cmap(color_palette).colors) * 255
+        ).astype(np.uint8)[:, ::-1].tolist()
+    except AttributeError:  # if palette has not pre-defined colors
+        colors = np.round(
+            np.array(plt.get_cmap(color_palette)(np.linspace(0, 1, palette_samples))) * 255
+        ).astype(np.uint8)[:, -2::-1].tolist()
+
+    circle_size = max(1, min(image.shape[:2]) // 160)  # ToDo Shape it taking into account the size of the detection
+    # circle_size = max(2, int(np.sqrt(np.max(np.max(points, axis=0) - np.min(points, axis=0)) // 16)))
+
+    for i, pt in enumerate(points):
+        if pt[2] > confidence_threshold:
+            image = cv2.circle(image, (int(pt[1]), int(pt[0])), circle_size, tuple(colors[i % len(colors)]), -1)
+            #cv2.putText(image, str(person_index),(int(pt[1]+5), int(pt[0])+5), cv2.FONT_HERSHEY_COMPLEX, 1.0, (100, 200, 200), 2)
+            cv2.putText(image, str(i),(int(pt[1]+5), int(pt[0])+5), cv2.FONT_HERSHEY_COMPLEX, 1.0, (100, 200, 200), 1)
     return image
 
 
@@ -213,8 +252,10 @@ def draw_points_and_skeleton(image, points, skeleton, points_color_palette='tab2
     image = draw_skeleton(image, points, skeleton, color_palette=skeleton_color_palette,
                           palette_samples=skeleton_palette_samples, person_index=person_index,
                           confidence_threshold=confidence_threshold)
-    image = draw_points(image, points, color_palette=points_color_palette, palette_samples=points_palette_samples,
-                        confidence_threshold=confidence_threshold)
+    # image = draw_points(image, points, color_palette=points_color_palette, palette_samples=points_palette_samples,
+    #                     confidence_threshold=confidence_threshold)
+    image = draw_points_id(image, points, color_palette=points_color_palette, palette_samples=points_palette_samples,
+                          person_index=person_index,confidence_threshold=confidence_threshold)
     return image
 
 
