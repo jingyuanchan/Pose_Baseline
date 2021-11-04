@@ -103,15 +103,16 @@ def main(camera_id, filename, hrnet_c, hrnet_j, hrnet_weights, hrnet_joints_set,
 
         else:
             person_ids = np.arange(len(pts), dtype=np.int32)
-
+        sub_dict={}
         for i, (pt, pid) in enumerate(zip(pts, person_ids)):
             frame = draw_points_and_skeleton(frame, pt, joints_dict()[hrnet_joints_set]['skeleton'], person_index=pid,
                                              points_color_palette='gist_rainbow', skeleton_color_palette='jet',
                                              points_palette_samples=10)
             #print(pid)
             if extract_pts:
-                pts_dict[frame_count] = pt[:, :2]
-
+                sub_dict[str(pid)]=pt[:, :3]
+                pts_dict[str(frame_count)] = sub_dict
+        
         fps = 1. / (time.time() - t)
         print('\rframerate: %f fps / detected people: %d' % (fps, len(pts)), end='')
 
@@ -135,7 +136,7 @@ def main(camera_id, filename, hrnet_c, hrnet_j, hrnet_weights, hrnet_joints_set,
         frame_count += 1
 
     if extract_pts:
-        np.savez_compressed("output_pts", pts_dict)
+        np.save("output_pts", pts_dict)
     if save_video:
         video_writer.release()
 
