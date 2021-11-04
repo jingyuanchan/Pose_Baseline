@@ -15,7 +15,7 @@ from misc.utils import find_person_id_associations
 
 
 def main(camera_id, filename, hrnet_c, hrnet_j, hrnet_weights, hrnet_joints_set, image_resolution, disable_tracking,
-         max_nof_people, max_batch_size, disable_vidgear, save_video, video_format, video_framerate, device, extract_pts):
+         max_nof_people, max_batch_size, disable_vidgear, save_video, video_format, video_framerate, device, extract_pts, output_vid):
     if device is not None:
         device = torch.device(device)
     else:
@@ -31,8 +31,8 @@ def main(camera_id, filename, hrnet_c, hrnet_j, hrnet_weights, hrnet_joints_set,
     video_writer = None
 
     if filename is not None:
-        #rotation_code = check_video_rotation(filename)
-        rotation_code = None
+        rotation_code = check_video_rotation(filename)
+        #rotation_code = None
         video = cv2.VideoCapture(filename)
         assert video.isOpened()
     else:
@@ -84,7 +84,7 @@ def main(camera_id, filename, hrnet_c, hrnet_j, hrnet_weights, hrnet_joints_set,
         if not disable_tracking:
             if len(pts) > 0:
                 if prev_pts is None and prev_person_ids is None:
-                    person_ids = np.arange(next_person_id, len(pts) + next_person_id, dtype=np.int32) 
+                    person_ids = np.arange(next_person_id, len(pts) + next_person_id, dtype=np.int32)
                     next_person_id = len(pts) + 1
                 else:
                     boxes, pts, person_ids = find_person_id_associations(
@@ -127,7 +127,7 @@ def main(camera_id, filename, hrnet_c, hrnet_j, hrnet_weights, hrnet_joints_set,
         if save_video:
             if video_writer is None:
                 fourcc = cv2.VideoWriter_fourcc(*video_format)  # video format
-                video_writer = cv2.VideoWriter('output.avi', fourcc, video_framerate, (frame.shape[1], frame.shape[0]))
+                video_writer = cv2.VideoWriter(output_vid, fourcc, video_framerate, (frame.shape[1], frame.shape[0]))
             video_writer.write(frame)
         frame_count += 1
 
@@ -169,5 +169,6 @@ if __name__ == '__main__':
                                          "(e.g. `cuda:0` `cuda:1,2`); "
                                          "set to `cpu` to run on cpu.", type=str, default=None)
     parser.add_argument("--extract_pts", help="save output keypoints in numpy format", action="store_true")
+    parser.add_argument("--output_vid", help="output video path", type=str, default=None)
     args = parser.parse_args()
     main(**args.__dict__)
