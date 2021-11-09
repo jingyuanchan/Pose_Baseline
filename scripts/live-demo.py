@@ -136,7 +136,7 @@ def main(camera_id, filename, hrnet_c, hrnet_j, hrnet_weights, hrnet_joints_set,
         frame_count += 1
 
     if extract_pts:
-        np.save("output_pts", pts_dict)
+        np.save("output_pts_off", pts_dict)
     if save_video:
         video_writer.release()
 
