@@ -169,6 +169,7 @@ def draw_points_id(image, points, color_palette='tab20', palette_samples=16, con
             image = cv2.circle(image, (int(pt[1]), int(pt[0])), circle_size, tuple(colors[i % len(colors)]), -1)
             
             cv2.putText(image, str(i),(int(pt[1]+5), int(pt[0])+5), cv2.FONT_HERSHEY_COMPLEX, 1.0, (100, 200, 200), 1)
+    # put person id on th frame
     cv2.putText(image, str(person_index),(int(np.mean(points[:,1])), int(np.mean(points[:,0]))), cv2.FONT_HERSHEY_COMPLEX, 1.0, (200, 200, 200), 2)
     return image
 
